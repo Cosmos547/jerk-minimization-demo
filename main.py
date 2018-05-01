@@ -18,15 +18,15 @@ agent.setAtri(path.plist)
 
 jmagent = JMAgent('car_agent.png')
 jmagent.setAtri(path.plist)
-# print(jmagent.poly_a)
+print(jmagent.poly_a)
 
-# jmagent.make_plot()
+jmagent.make_plot()
 
 @window.event
 def on_draw():
     window.clear()
     path.render()
-    # agent.render()
+    agent.render()
     jmagent.render()
     # print(pyglet.clock.get_fps())
 

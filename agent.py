@@ -85,7 +85,7 @@ class JMAgent(Agent):
 
         a_3 = 10/(time**2)*(x_dot - p1.v - 0.5*x_ddot*time) - 4/time*(x_ddot - p1.a) + 0.5*x_dddot
         a_4 = -15/(time**3)*(x_dot - p1.v - 0.5*x_ddot*time) + 7/(time**2)*(x_ddot - p1.a) - 1/time*x_dddot
-        a_5 = 6/(time**4)*(x_dot - p1.v - 0.5*x_ddot*time) - 3/(time**3)*(x_ddot - p1.a) - 1/(2*(time**2))*x_dddot
+        a_5 = 6/(time**4)*(x_dot - p1.v - 0.5*x_ddot*time) - 3/(time**3)*(x_ddot - p1.a) + 1/(2*(time**2))*x_dddot
 
         self.poly_a = [a_0, a_1, a_2, a_3, a_4, a_5]
 
