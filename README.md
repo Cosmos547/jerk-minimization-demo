@@ -1,3 +1,3 @@
 # jerk-minimization-demo
 
-[!alt text](./frames/animation.gif)
+![alt text](./frames/animation.gif)
