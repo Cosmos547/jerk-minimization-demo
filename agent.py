@@ -14,6 +14,7 @@ class Agent:
         self.posy = 0
         self.sprite = pyglet.sprite.Sprite(self.pic)
         self.orientation = 0
+        self.end = False
 
     def set_location(self, x, y):
         self.posx = x
@@ -28,6 +29,7 @@ class Agent:
         # print(self.posx, self.posy)
         # Hardcoded, for general purpose need to consider point location
         if (self.path[-1].x - self.posx + self.path[-1].y - self.posy < 0.001):
+            self.end = True
             return
         self.posx += (self.path[0].v+self.path[1].v)/2 * (math.cos(self.orientation)) * dt
         self.posy += (self.path[0].v+self.path[1].v)/2 * (math.sin(self.orientation)) * dt
@@ -53,8 +55,7 @@ class JMAgent(Agent):
 
     def update(self, dt):
         if (self.t > self.time):
-            return
-        if self.moved_dis > self.total_dis :
+            self.end = True
             return
         self.t += dt
         self.moved_dis = self.calculate_moved_dist(self.t)

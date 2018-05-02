@@ -17,6 +17,7 @@ p2.a = 50
 path = Path([p1, p2])
 agent = Agent('car_agent.png')
 agent.setAtri(path.plist)
+frame = 0
 
 jmagent = JMAgent('car_agent.png')
 jmagent.setAtri(path.plist)
@@ -33,8 +34,15 @@ def on_draw():
     # print(pyglet.clock.get_fps())
 
 def update(dt):
+    global frame
     jmagent.update(dt)
     agent.update(dt)
+    if (jmagent.end and agent.end):
+        return
+    # file_num = str(frame).zfill(5)
+    # filename="frame"+file_num+'.png'
+    # pyglet.image.get_buffer_manager().get_color_buffer().save(filename)
+    # frame+=1
     # agent.sprite.x += dt*10
     # print(dt)
     return
