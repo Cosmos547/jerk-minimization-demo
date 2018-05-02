@@ -29,14 +29,14 @@ class Agent:
         # Hardcoded, for general purpose need to consider point location
         if (self.path[-1].x - self.posx + self.path[-1].y - self.posy < 0.001):
             return
-        self.posx += self.path[0].v * (math.cos(self.orientation)) * dt
-        self.posy += self.path[0].v * (math.sin(self.orientation)) * dt
+        self.posx += (self.path[0].v+self.path[1].v)/2 * (math.cos(self.orientation)) * dt
+        self.posy += (self.path[0].v+self.path[1].v)/2 * (math.sin(self.orientation)) * dt
 
     def setAtri(self, pts):
         self.path = pts
         if (len(pts) >= 2):
-            self.posx = pts[0].x
-            self.posy = pts[0].y
+            self.posx = pts[0].x + 50
+            self.posy = pts[0].y - 50
             self.orientation = math.atan2(pts[-1].y - pts[0].y, pts[-1].x - pts[0].x)
 
         return
@@ -83,9 +83,9 @@ class JMAgent(Agent):
         a_1 = p1.v
         a_2 = p1.a/2.0
 
-        a_3 = 10/(time**2)*(x_dot - p1.v - 0.5*x_ddot*time) - 4/time*(x_ddot - p1.a) + 0.5*x_dddot
-        a_4 = -15/(time**3)*(x_dot - p1.v - 0.5*x_ddot*time) + 7/(time**2)*(x_ddot - p1.a) - 1/time*x_dddot
-        a_5 = 6/(time**4)*(x_dot - p1.v - 0.5*x_ddot*time) - 3/(time**3)*(x_ddot - p1.a) + 1/(2*(time**2))*x_dddot
+        a_3 = 10/(time**2)*(x_dot - p1.v - 0.5*p1.a*time) - 4/time*(x_ddot - p1.a) + 0.5*x_dddot
+        a_4 = -15/(time**3)*(x_dot - p1.v - 0.5*p1.a*time) + 7/(time**2)*(x_ddot - p1.a) - 1/time*x_dddot
+        a_5 = 6/(time**4)*(x_dot - p1.v - 0.5*p1.a*time) - 3/(time**3)*(x_ddot - p1.a) + 1/(2*(time**2))*x_dddot
 
         self.poly_a = [a_0, a_1, a_2, a_3, a_4, a_5]
 
@@ -96,16 +96,30 @@ class JMAgent(Agent):
     def make_plot(self):
         N = self.time / 0.01
         samples = np.arange(N)*0.01
-        print(samples)
         fnc = np.vectorize(self.calculate_moved_dist)
         dists = fnc(samples)
-        print(dists)
-        print(self.poly_a)
-        print(self.calculate_moved_dist(1.2))
-        plt.plot(samples, dists)
-        plt.plot(samples, 200*samples)
-        plt.show()
+        fnc = np.vectorize(lambda x: self.poly_a[1]+ 2*self.poly_a[2]*x + 3*self.poly_a[3]*x**2 + 4 * self.poly_a[4]*x**3 + 5*self.poly_a[5]*x**4)
+        vels = fnc(samples)
+        fnc = np.vectorize(lambda x: 2*self.poly_a[2] + 6*self.poly_a[3]*x + 12*self.poly_a[4]*x**2 + 20*self.poly_a[5]*x**3)
+        accels = fnc(samples)
+        fnc = np.vectorize(lambda x: 6*self.poly_a[3] + 24*self.poly_a[4]*x + 60*self.poly_a[5]*x**2)
+        jerk = fnc(samples)
+        # plt.plot(samples, dists)
+        # plt.plot(samples, ((self.path[-1].v + self.path[0].v)/2)*samples)
+        # plt.show()
 
+        f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2)
+        ax1.plot(samples, dists)
+        ax1.set_title("time(s) vs displacement(px)")
+        ax1.plot(samples, ((self.path[-1].v + self.path[0].v)/2)*samples)
+        ax2.set_title("time(s) vs velocity(px/s)")
+        ax2.plot(samples, vels)
+        ax3.plot(samples, accels)
+        ax3.set_title("time(s) vs acceleration(px/s^2)")
+        ax4.plot(samples, jerk)
+        ax4.set_title("time(s) vs jerk(px/s^3)")
+
+        plt.show()
 
 
 
