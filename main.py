@@ -37,9 +37,9 @@ def update(dt):
     global frame
     jmagent.update(dt)
     agent.update(dt)
-    if (jmagent.end and agent.end):
-        return
-    file_num = str(frame).zfill(5)
+    # if (jmagent.end and agent.end):
+        # return
+    # file_num = str(frame).zfill(5)
     # filename="frame"+file_num+'.png'
     # pyglet.image.get_buffer_manager().get_color_buffer().save(filename)
     # frame+=1
